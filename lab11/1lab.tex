@@ -1,0 +1,267 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode} 
+
+%---enable russian----
+
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+
+% PROBABILITY SYMBOLS
+\newcommand*\PROB\Pr 
+\DeclareMathOperator*{\EXPECT}{\mathbb{E}}
+
+
+% Sets, Rngs, ets 
+\newcommand{\N}{{{\mathbb N}}}
+\newcommand{\Z}{{{\mathbb Z}}}
+\newcommand{\R}{{{\mathbb R}}}
+\newcommand{\Zp}{\ints_p} % Integers modulo p
+\newcommand{\Zq}{\ints_q} % Integers modulo q
+\newcommand{\Zn}{\ints_N} % Integers modulo N
+
+% Landau 
+\newcommand{\bigO}{\mathcal{O}}
+\newcommand*{\OLandau}{\bigO}
+\newcommand*{\WLandau}{\Omega}
+\newcommand*{\xOLandau}{\widetilde{\OLandau}}
+\newcommand*{\xWLandau}{\widetilde{\WLandau}}
+\newcommand*{\TLandau}{\Theta}
+\newcommand*{\xTLandau}{\widetilde{\TLandau}}
+\newcommand{\smallo}{o} %technically, an omicron
+\newcommand{\softO}{\widetilde{\bigO}}
+\newcommand{\wLandau}{\omega}
+\newcommand{\negl}{\mathrm{negl}} 
+
+% Misc
+\newcommand{\eps}{\varepsilon}
+\newcommand{\inprod}[1]{\left\langle #1 \right\rangle}
+
+ 
+\newcommand{\handout}[5]{
+  \noindent
+  \begin{center}
+  \framebox{
+    \vbox{
+      \hbox to 5.78in { {\bf Научно-исследовательская практика} \hfill #2 }
+      \vspace{4mm}
+      \hbox to 5.78in { {\Large \hfill #5  \hfill} }
+      \vspace{2mm}
+      \hbox to 5.78in { {\em #3 \hfill #4} }
+    }
+  }
+  \end{center}
+  \vspace*{4mm}
+}
+
+\newcommand{\lecture}[4]{\handout{#1}{#2}{#3}{Scribe: #4}{Элементарная теория чисел #1}}
+
+\newtheorem{theorem}{Теорема}
+\newtheorem{lemma}{Лемма}
+\newtheorem{definition}{Определение}
+\newtheorem{corollary}{Следствие}
+\newtheorem{fact}{Факт}
+
+% 1-inch margins
+\topmargin 0pt
+\advance \topmargin by -\headheight
+\advance \topmargin by -\headsep
+\textheight 8.9in
+\oddsidemargin 0pt
+\evensidemargin \oddsidemargin
+\marginparwidth 0.5in
+\textwidth 6.5in
+
+\parindent 0in
+\parskip 1.5ex
+
+\begin{document}
+
+\lecture{}{Лето 2020}{}{Астафьев Артем}
+
+
+\section{Наибольший Общий Делитель}
+
+\subsection{Анализ}
+
+
+Для иллюстрации последнего следствия заметим, 
+НОД(-12, 30)=6 и 
+\begin{center}
+НОД(-12/6, 30/6)=НОД(-2, 5)=1,
+\end{center}
+как оно и должно быть.
+    Это неверно, не добавляя дополнительного условия, что
+a|c и b|c вместе дают ab|c. 
+\setcounter{corollary}{1}
+\begin{corollary}
+Если a|c и b|c, и НОД(a,b)=1, знаит ab|c.
+\begin{proof}
+	Поскольку a|c и b|c, r и s целые числа то  можно найти такое с = ar=bs.Теперь взаимосвязь НОД(a, b)=1 позволяет нам написать 1=ax+by для некоторого набора  целых чисел x и y Умножим последнее уравнение на с,похоже,что
+	\begin{center}
+		с = с*1 = с(ax+by)=acx+bcy
+	\end{center}
+если соответствующие замены теперь сделаны с правой стороны, то
+\begin{center}
+	c=a(bs)x+b(ar)y=ab(sx+ry)
+\end{center}
+или, как заявление о невозможности, ab|c.
+\end{proof}
+\end{corollary}
+Наш следующее следствие кажется довольно небольшим, но имеет фундаментальное значение
+
+\setcounter{theorem}{4}
+\begin{theorem}
+	(Лемма Евклида).Если a|bc, и НОД(a,b)=1,значит a|c.
+\end{theorem}
+\begin{proof}
+	Мы снова начнем с Теоремы 3(из этой главы), напишем 1 = ax+by, где х и у целые числа. Умножение этого уравнение на с дает
+	\begin{center}
+		c = 1*c=(ax+by)c=acx+bcy
+	\end{center}
+    Потому что a|ac и a|bc, из этого следует что a|(acx+bcy),что можно представить как a|c.
+\end{proof}
+Если a и b не являются относительно простыми, то вывод леммы Евклида может оказаться несостоятельным.
+
+Последующая теорема часто служит определением НОД (a,b). Преимущество использования его в качестве определения состоит в том, что здесь не задействованы отношения порядка. Таким образом, он может быть использован в алгебраических системах, не имеющих отношения порядка. 
+
+\begin{theorem}
+	Пусть a,b целые числа,не равные нулю.Для положительного целого числа d,d=НОД(a,b) тогда и только тогда когда
+	\begin{flushleft}
+		(1) d|a и d|b
+	\end{flushleft}
+	\begin{flushleft}
+	(2) если c|a и c|b,то c|d.
+	\end{flushleft}
+\end{theorem}
+\begin{proof}
+	Для начала предположим, что d=НОД(a,b).Конечно, d|a и d|b, так что (1) имееи место.В свете Теоремы 3(из этой главы),d выражается как d=ax+by для некоотрых целых чисел x и y.
+	Таким образом, если c|a, значит c|(ax+by),или вернее c|d.
+	Короче говоря, утверждение(2) имеет место.Наоборот, пусть d любое положительное число,удовлетворяющее указаым условиям.
+	Учитывая любой общий делитель c из а и b, мы имеем c|d из геротезы (2).Импликация заключается в том $d \ge c$, и  вследствии d это НОД(a,b).
+\end{proof}
+
+\subsection{вопросы}
+\begin{enumerate}
+\item Если a|b, покожите,что (-a)|b, a|(-b),(-a)|(-b)
+\item Даны целые числа a,b,c, убедитесь, что
+\begin{flushleft}
+	(а)  Если a|b, то a|bc;
+\end{flushleft}
+\begin{flushleft}
+	(b) Если  a|b и,значит a|c $a^{2}|bc$;
+\end{flushleft}
+\begin{flushleft}
+	(c)  a|b тогда и только тогда,когда ac|bc, где $c \neq 0$.
+\end{flushleft}
+
+\item доказать или опровергнуть: если a|(b+c), тогда или a|b или a|c.
+\item Докажите,что для любого целого числа а, одно из чисел а + 2, а + 4 делится на 3.
+\item Для произвольного целого числа а, установить, что 2|a(a+1) пока 3|a(a+1)(a+2).
+\item Для $n\ge 1$, использую индукцию докажите,что
+\begin{flushleft}
+	(а)  7 делится на $2^{3n}-1$ и 8 делится $3^{2n}+7$
+\end{flushleft}
+\begin{flushleft}
+	(b) $2^{n}+(-1)^{n+1}$ делится на 3.
+\end{flushleft}
+\item Докажите что
+\begin{flushleft}
+	(а)  Сумма квадратов двух нечетных чисел не может быть полным квадратом;
+\end{flushleft}
+\begin{flushleft}
+	(b)Произведение четырёх последовательных целых чисел на один меньше, чем полный квадрат.
+\end{flushleft}
+\item Установите, что разница двух последователных кубов никогда не делится на 2.
+\item Для ненулевого целого числа а покажите, что НОД(а,0)=|a|,НОД(а,а)=|a|, и НОД(а,1)=1.
+\item  Если a и b целые числа,не равные нулю, убедитесь, что
+\begin{center}
+	НОД(a,b)=НОД(-a,b)=НОД(a,-b)=НОД(-a,-b).
+\end{center}
+
+\item Докажите, что для положительного целого число n и любого целого числа a,НОД(a,a+n) делится на n;следовательно,НОД(а,а+1)=1.
+
+\item Даны целые числа a и b,докажите,что
+\begin{flushleft}
+	(а) Существуют целые числа x и y,для которых с=ах+by тогда и только тогда,когда НОД(а,b)|c;
+\end{flushleft}
+\begin{flushleft}
+	(b) Если существуют целые числа х и у, для которых ах+by=НОД(a,b),значит НОД(х,у)=1.
+\end{flushleft}
+\item Докажите: Произведение любых трех последовательных целых чисел делится на 6;произвеление любых четырех последовательных целых чисел делится на 24;произведение любых 5 последовательных целых чисел делится на 120.
+\item Установите каждое из приведенных ниже утверждений:
+\begin{flushleft}
+	(а) Если а неетное целое число, значит 24|a($a^{2}-1$).
+\end{flushleft}
+\begin{flushleft}
+	(b) Если а и b нечетные целые числа, значит 8|a($a^{2}-b^{2}$).
+\end{flushleft}
+\begin{flushleft}
+	(c) Если а целое число не делющиеся на 2 или 3, значит 24|a($a^{2}+23$).
+\end{flushleft}
+\begin{flushleft}
+	(d) Если а произвольное целое число, значит 360|$a^{2}(a^{2}-1)(a^{2}-4)$.
+\end{flushleft}
+
+\item Убедитесь,что следующие свойства наибольщего общего делителя имеют место:
+\begin{flushleft}
+	(a) Если НОД(a,b)=1 и НОД(a,c)=1, значит НОД(a,bc)=1.
+\end{flushleft}
+\begin{flushleft}
+	(b) Если НОД(a,b)=1 и с|a, значит НОД(b,c)=1.
+\end{flushleft}\begin{flushleft}
+	(c) Если НОД(a,b)=1 ,значит НОД(ac,b)=НОД(c,b).
+\end{flushleft}
+\begin{flushleft}
+	(d) Если НОД(a,b)=1 и c|a+b, значит НОД(a,c)=НОД(b,c)=1.
+\end{flushleft}
+
+\end{enumerate}
+
+\section{Алгоритм Евклида}
+\subsection{Анализ}
+Наибольший общий делитель двух целых чисел можно найти, перечислив все их возможные делители и выбрав наибольший общий для каждого из них; но это слишком много для больших чисел. Более эффективный процесс, включающий повторное применение алгоритма деления, приведен в седьмой книге
+Элементы.
+Хотя есть исторические свидетельства того, что этот метод предшествовал Евклиду, сегодня он называется
+алгоритм Евклида
+
+ Евклидов алгоритм может быть описан следующим образом пусть a и b-два целыхчисла,наибольший общий делитель которых желателен.Так как НОД(|a|,|b|)=НОД(a,b),нет ничего плохого в предположении,что $a\ge b$ > 0.
+ Первый шаг-применить алгоритм деления к a и b, чтобы получить
+ \begin{center}
+ 	$a=q_1$b+$r_1$,	$0\le r_1$<b
+ \end{center}
+ Если так случится,что $r_1$=0,значит b|a и НОД(a,b)=b. Когда $r_1 \neq 0$,
+ делим b на $r_1$ для получения целых чисел $q_2$ и $r_2$ удовлетворяющий
+ \begin{center}
+ 	b = $q_2$$r_1$ + $r_2$, $0\le r_2$<$r_1$
+ \end{center}
+ Если $r_2$=0, значит мы останавливаемся;в противном случае действуйте так же, как и раньше, чтобы получить
+ \begin{center}
+ 	$r_1$ = $q_3$$r_2$ + $r_3$, $0\le r_3$<$r_2$
+ \end{center}
+этот процесс деления продолжается до тех пор, пока не появится некоторый нулевой остаток, скажем, на (n+1) шаге,где $r_n-1$ делит $r_n$(нулевой остаток возникает рано или поздно, потому что убывающая последовательность $b > r_1 > r_2 > ... \ge 0$ не может содержать более b  целых чисел)
+
+В результате получается следующая система уравнений:
+\begin{center}
+	$a=q_1$b+$r_1$,	$0\le r_1$<b
+	
+	b = $q_2$$r_1$ + $r_2$, $0\le r_2$<$r_1$
+	
+	$r_1$ = $q_3$$r_2$ + $r_3$, $0\le r_3$<$r_2$
+
+    ***
+    
+    $r_n-2$ = $q_n$$r_n$ + $r_n$, $0\le r_n$<$r_n-1$
+    
+    $r_n-1$ = $q_n+1$$r_n$ + 0
+\end{center}
+Мы утверждаем, что $r_n$ последний ненулевой остаток, который появляется таким образом,равным НОД(a,b).Наше доказательство основано на приведенной ниже лемме.
+\begin{lemma}
+	Если a=qb+r,значит НОД(a,b)=НОД(b,r).
+\end{lemma}
+\cite{Burton}
+\bibliographystyle{plain}
+\bibliography{b.bib}
+
+\end{document}
